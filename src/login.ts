@@ -17,7 +17,7 @@ let credential: Credentials | undefined;
 export const getCredentialsFilePath = () => {
   const info = userInfo();
   return join(info.homedir, '.config', 'builder', 'credentials.json');
-}
+};
 
 export const getLogin = async () => {
   if (credential) {
@@ -36,7 +36,7 @@ export const getLogin = async () => {
     console.error(err);
     return undefined;
   }
-  return await login()
+  return await login();
 };
 
 export const mustLogin = async () => {
@@ -108,7 +108,7 @@ const getNewToken = () => {
           return;
         }
         const parsedUrl = new URL(req.url!);
-        if (parsedUrl.pathname !== "auth") {
+        if (parsedUrl.pathname !== 'auth') {
           reject(new Error('Bad path'));
           return;
         }
@@ -135,18 +135,18 @@ const getNewToken = () => {
         loading.stop(true);
         resolve({
           privateKey,
-          apiKey
+          apiKey,
         });
       })
       .listen(PORT);
 
     // opens browser to the authorizationURL (auth consent form in Smartsheet)
-    console.log(`\n🔑 ${yellowBright(bold("Login required"))}
-${dim("   Your browser will open, please follow the instructions.")}\n`);
+    console.log(`\n🔑 ${yellowBright(bold('Login required'))}
+${dim('   Your browser will open, please follow the instructions.')}\n`);
 
     loading.setSpinnerString(8);
     loading.start();
 
     open(authUrl);
   });
-}
+};

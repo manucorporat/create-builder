@@ -2,16 +2,15 @@ import { Command } from 'commander';
 import { init } from './init';
 import { saveLogin } from './login';
 
-
 async function run() {
   const program = new Command();
   const defaultActions = async (options: any) => {
     if (options.pkey) {
       await saveLogin({
-        privateKey: options.pkey
+        privateKey: options.pkey,
       });
     }
-  }
+  };
   program
     .option('-d,--debug', 'print debugging information')
     .option('--pkey [pkey]', 'set private key manually')
@@ -23,7 +22,7 @@ async function run() {
       const welcome = options.welcome;
       if (welcome) {
         await saveLogin({
-          apiKey: welcome
+          apiKey: welcome,
         });
         options.run = true;
       }

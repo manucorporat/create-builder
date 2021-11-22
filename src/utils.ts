@@ -1,7 +1,7 @@
 import { ChildProcess, spawn } from 'child_process';
 import { existsSync, readdirSync, lstatSync, unlinkSync, rmdirSync, readFile, readdir } from 'fs-extra';
 import { join } from 'path';
-import { bold, green, yellow } from 'colorette';
+import { bold, green, red, yellow } from 'colorette';
 import traverse from 'traverse';
 
 export const IS_YARN = (() => {
@@ -147,4 +147,8 @@ export const replaceField = (json: any, newValue: string, oldValue: string) => {
 
 export const logSuccess = (str: string) => {
   console.log(`${green('✔')} ${bold(str)}`);
-}
+};
+
+export const logError = (str: string) => {
+  console.log(`${red('❌')} ${str}`);
+};

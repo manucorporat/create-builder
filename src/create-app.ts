@@ -7,11 +7,11 @@ import { Starter } from './starters';
 import { unZipBuffer } from './unzip';
 import { logSuccess, npm, onlyUnix, printDuration, setTmpDirectory, terminalPrompt } from './utils';
 import { BUILD, START, TEST } from './texts';
-import { replaceInFile } from "replace-in-file";
+import { replaceInFile } from 'replace-in-file';
 import { mustGetApiKey } from './login';
 import { openBuilder } from './open';
 
-const starterPromises = new Map<Starter, Promise<undefined | ((name: string, context: {[context: string]: string}) => Promise<void>)>>();
+const starterPromises = new Map<Starter, Promise<undefined | ((name: string, context: { [context: string]: string }) => Promise<void>)>>();
 
 export async function createApp(starter: Starter, projectName: string, autoRun: boolean) {
   if (fs.existsSync(projectName)) {
@@ -33,7 +33,7 @@ export async function createApp(starter: Starter, projectName: string, autoRun: 
   const apiKey = await mustGetApiKey();
   await moveTo(projectName, {
     'project-name': projectName,
-    'public-key': apiKey
+    'public-key': apiKey,
   });
 
   const time = printDuration(Date.now() - startT);
@@ -59,7 +59,7 @@ ${renderDocs(starter)}
 `);
 
   if (autoRun) {
-    await openBuilder(projectName, 3000);
+    openBuilder(projectName, 3000);
     await npm('run dev', projectName, 'inherit');
   }
 }
@@ -114,13 +114,13 @@ async function prepare(starter: Starter) {
   loading3.stop(true);
   logSuccess('Deps installed');
 
-  return async (projectName: string, context: {[context: string]: string}) => {
+  return async (projectName: string, context: { [context: string]: string }) => {
     const filePath = join(baseDir, projectName);
     await rename(tmpPath, filePath);
     for (const [key, value] of Object.entries(context)) {
       await replaceInFile({
         files: [join(filePath, '*'), join(filePath, 'src/**/*'), join(filePath, 'pages/**/*'), join(filePath, 'components/**/*')],
-        ignore: ["node_modules", "dist", "build", ".git"],
+        ignore: ['node_modules', 'dist', 'build', '.git'],
         from: new RegExp(`builder-${key}`, 'g'),
         allowEmptyPaths: true,
         to: value,

@@ -1,8 +1,10 @@
 import { cursor, erase } from 'sisteransi';
 import { dim } from 'colorette';
-import { createApp, prepareStarter } from './create-app';
+import fs from 'fs-extra';
+import { createApp } from './create-app';
 import { STARTERS, Starter, getStarterRepo } from './starters';
 import { prompt } from './vendor/prompts';
+import { logError } from './utils';
 
 export async function runInteractive(starterName: string | undefined, autoRun: boolean) {
   process.stdout.write(erase.screen);
@@ -59,16 +61,18 @@ function getChoices() {
   ];
 }
 
-async function askProjectName() {
+async function askProjectName(): Promise<string> {
   const { projectName }: any = await prompt([
     {
       type: 'text',
       name: 'projectName',
       message: 'Project name',
+      initial: 'my-builder-app',
     },
   ]);
-  if (!projectName) {
-    throw new Error(`No project name was provided, try again.`);
+  if (!projectName || fs.existsSync(projectName)) {
+    logError(`Folder "./${projectName}" already exists, try a different project name.`);
+    return await askProjectName();
   }
   return projectName;
 }

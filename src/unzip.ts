@@ -3,7 +3,7 @@ import path from 'path';
 import { fromBuffer } from 'yauzl';
 
 export function unZipBuffer(buffer: Buffer, projectName: string, prefixStr: string | undefined) {
-  const prefix = prefixStr ? prefixStr.split("/") : [];
+  const prefix = prefixStr ? prefixStr.split('/') : [];
   return new Promise((resolve, reject) => {
     fromBuffer(buffer, { lazyEntries: true }, handleZipFile(projectName, prefix, resolve, reject));
   });
@@ -19,9 +19,9 @@ function handleZipFile(projectName: string, prefix: string[], resolve: any, reje
     zipfile.readEntry();
     zipfile.on('entry', (entry: any) => {
       const segments = entry.fileName.split('/');
-      let size = Math.min(prefix.length, segments.length-1)
+      let size = Math.min(prefix.length, segments.length - 1);
       for (let i = 0; i < size; i++) {
-        if (segments[i+1] !== prefix[i]) {
+        if (segments[i + 1] !== prefix[i]) {
           zipfile.readEntry();
           return;
         }
