@@ -5,6 +5,7 @@ import http from 'http';
 import open from 'open';
 import { bold, dim, yellowBright } from 'colorette';
 import { Spinner } from 'cli-spinner';
+import { openBuilderAuth } from './open';
 
 interface Credentials {
   version: '1';
@@ -95,23 +96,18 @@ const CLIENT_ID = 'create-builder';
 const PORT = 10110;
 
 const getNewToken = () => {
-  const params = new URLSearchParams();
-  params.set('response_type', 'code');
-  params.set('client_id', CLIENT_ID);
   const loading = new Spinner(bold(' Waiting for authorization...'));
-  const authUrl = 'https://builder.io/content?' + params.toString();
   return new Promise<LoginData>((resolve, reject) => {
     const server = http
       .createServer((req, res) => {
-        if (req.method !== 'GET') {
-          reject(new Error('Bad method'));
-          return;
-        }
-        const parsedUrl = new URL(req.url!);
-        if (parsedUrl.pathname !== 'auth') {
+        const parsedUrl = new URL(req.url!, "http://localhost:10110/");
+        console.log('parsedUrl.pathname', parsedUrl.pathname);
+        console.log('req.method', req.method);
+        if (parsedUrl.pathname !== '/auth') {
           reject(new Error('Bad path'));
           return;
         }
+        console.log(req.url);
         const queryAsObject = parsedUrl.searchParams;
         const privateKey = queryAsObject.get('p-key');
         if (!privateKey) {
@@ -124,6 +120,8 @@ const getNewToken = () => {
           reject(new Error('Missing api-key'));
           return;
         }
+
+        console.log('redirect');
 
         res.writeHead(302, {
           Location: 'https://builder.io/cli-auth?success=true',
@@ -147,6 +145,6 @@ ${dim('   Your browser will open, please follow the instructions.')}\n`);
     loading.setSpinnerString(8);
     loading.start();
 
-    open(authUrl);
+    openBuilderAuth(PORT, CLIENT_ID);
   });
 };

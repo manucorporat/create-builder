@@ -24,11 +24,10 @@ async function run() {
         await saveLogin({
           apiKey: welcome,
         });
-        options.run = true;
       }
 
       await defaultActions(options);
-      await init(options.run, options.starter, options.name);
+      await init(true, options.starter, options.name);
     });
 
   program.parse(process.argv);
