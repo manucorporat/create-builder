@@ -10,9 +10,9 @@ export interface Starter {
 
 export const STARTERS: Starter[] = [
   {
-    name: 'nextjs-simple',
+    name: 'nextjs',
     repo: 'manucorporat/test-builder-starter',
-    description: 'The ultimate starter for headless Shopify stores',
+    description: 'Get starter with a server-side rendering nextjs starter',
     docs: 'https://github.com/BuilderIO/nextjs-shopify#readme',
   },
 
