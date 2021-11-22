@@ -59,7 +59,7 @@ ${renderDocs(starter)}
 `);
 
   if (autoRun) {
-    await openBuilder(3000);
+    await openBuilder(projectName, 3000);
     await npm('run dev', projectName, 'inherit');
   }
 }

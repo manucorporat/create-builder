@@ -1,6 +1,6 @@
 {
   "name": "create-builder-experimental",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Quickly create a new builder application: npm init builder",
   "main": "index.js",
   "scripts": {
