@@ -3,6 +3,7 @@ import { existsSync, readdirSync, lstatSync, unlinkSync, rmdirSync, readFile, re
 import { join } from 'path';
 import { bold, green, red, yellow } from 'colorette';
 import traverse from 'traverse';
+import { prompt } from './vendor/prompts';
 
 export const IS_YARN = (() => {
   const config = process.env['npm_config_registry'];
@@ -152,3 +153,16 @@ export const logSuccess = (str: string) => {
 export const logError = (str: string) => {
   console.log(`${red('❌')} ${str}`);
 };
+
+
+export const askQuestion = async (message: string) => {
+  const { confirm }: any = await prompt([
+    {
+      type: 'confirm',
+      name: 'confirm',
+      message,
+      initial: true,
+    },
+  ]);
+  return confirm;
+}

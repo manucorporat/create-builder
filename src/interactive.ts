@@ -1,10 +1,10 @@
 import { cursor, erase } from 'sisteransi';
-import { dim } from 'colorette';
+import { bold, dim } from 'colorette';
 import fs from 'fs-extra';
 import { createApp } from './create-app';
 import { STARTERS, Starter, getStarterRepo } from './starters';
 import { prompt } from './vendor/prompts';
-import { logError } from './utils';
+import { askQuestion, logError } from './utils';
 
 export async function runInteractive(starterName: string | undefined, autoRun: boolean) {
   process.stdout.write(erase.screen);
@@ -77,16 +77,8 @@ async function askProjectName(): Promise<string> {
   return projectName;
 }
 
-async function askConfirm(starter: Starter, projectName: string) {
-  const { confirm }: any = await prompt([
-    {
-      type: 'confirm',
-      name: 'confirm',
-      message: 'Confirm?',
-      initial: true,
-    },
-  ]);
-  return confirm;
+async function askConfirm(_starter: Starter, _projectName: string) {
+  return askQuestion(bold('Confirm?'));
 }
 
 function padEnd(str: string, targetLength: number, padString = ' ') {

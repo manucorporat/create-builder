@@ -5,7 +5,7 @@ import { bold, cyan, dim, green } from 'colorette';
 import { downloadStarter } from './download';
 import { Starter } from './starters';
 import { unZipBuffer } from './unzip';
-import { logSuccess, npm, onlyUnix, printDuration, setTmpDirectory, terminalPrompt } from './utils';
+import { askQuestion, logSuccess, npm, onlyUnix, printDuration, setTmpDirectory, terminalPrompt } from './utils';
 import { BUILD, START, TEST } from './texts';
 import { replaceInFile } from 'replace-in-file';
 import { mustGetApiKey } from './login';
@@ -39,28 +39,35 @@ export async function createApp(starter: Starter, projectName: string, autoRun: 
   const time = printDuration(Date.now() - startT);
   console.log(`${green('✔')} ${bold('All setup')} ${onlyUnix('🎉')} ${dim(time)}
 
+  ${dim(terminalPrompt())} ${green('cd')} ${projectName}
+
   ${dim(terminalPrompt())} ${green(START)}
     Starts the development server.
 
   ${dim(terminalPrompt())} ${green(BUILD)}
-    Builds your components/app in production mode.
+    Builds your app in production mode.
 
-  ${dim(terminalPrompt())} ${green(TEST)}
-    Starts the test runner.
-
-
-  ${dim('We suggest that you begin by typing:')}
-
-   ${dim(terminalPrompt())} ${green('cd')} ${projectName}
-   ${dim(terminalPrompt())} ${green(START)}
 ${renderDocs(starter)}
 
   Happy coding! 🎈
 `);
 
   if (autoRun) {
-    openBuilder(projectName, 3000);
-    await npm('run dev', projectName, 'inherit');
+    const next = await askQuestion(`Run dev server and open the builder's editor in the browser. ${bold("Confirm?")}`);
+    if (next) {
+      console.log(`
+${dim('Opening dev server and editor in the browser:')}
+  ${green('✔')} Opening browser...
+  ${green('✔')} ${dim(terminalPrompt())} ${green('cd')} ${projectName}
+  ${green('✔')} ${dim(terminalPrompt())} ${green(START)}
+`);
+      setTimeout(() => {
+        openBuilder(projectName, 3000);
+      }, 2000)
+      await npm('start', projectName, 'inherit');
+    } else {
+      console.log('\n  aborting...');
+    }
   }
 }
 

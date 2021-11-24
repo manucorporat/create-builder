@@ -6,6 +6,7 @@ import open from 'open';
 import { bold, dim, yellowBright } from 'colorette';
 import { Spinner } from 'cli-spinner';
 import { openBuilderAuth } from './open';
+import { askQuestion } from './utils';
 
 interface Credentials {
   version: '1';
@@ -96,55 +97,58 @@ const CLIENT_ID = 'create-builder';
 const PORT = 10110;
 
 const getNewToken = () => {
-  const loading = new Spinner(bold(' Waiting for authorization...'));
-  return new Promise<LoginData>((resolve, reject) => {
-    const server = http
-      .createServer((req, res) => {
-        const parsedUrl = new URL(req.url!, "http://localhost:10110/");
-        console.log('parsedUrl.pathname', parsedUrl.pathname);
-        console.log('req.method', req.method);
-        if (parsedUrl.pathname !== '/auth') {
-          reject(new Error('Bad path'));
-          return;
-        }
-        console.log(req.url);
-        const queryAsObject = parsedUrl.searchParams;
-        const privateKey = queryAsObject.get('p-key');
-        if (!privateKey) {
-          reject(new Error('Missing p-key'));
-          return;
-        }
+  return askQuestion(`${yellowBright(bold('Login required'))}. The CLI is going to open the browser. ${bold("Confirm?")}`).then(next => {
+    if (!next) {
+      throw new Error("aborted");
+    }
+    const loading = new Spinner(bold(' Waiting for authorization...'));
+    return new Promise<LoginData>((resolve, reject) => {
+      const server = http
+        .createServer((req, res) => {
+          const parsedUrl = new URL(req.url!, "http://localhost:10110/");
+          console.log('parsedUrl.pathname', parsedUrl.pathname);
+          console.log('req.method', req.method);
+          if (parsedUrl.pathname !== '/auth') {
+            reject(new Error('Bad path'));
+            return;
+          }
+          console.log(req.url);
+          const queryAsObject = parsedUrl.searchParams;
+          const privateKey = queryAsObject.get('p-key');
+          if (!privateKey) {
+            reject(new Error('Missing p-key'));
+            return;
+          }
 
-        const apiKey = queryAsObject.get('api-key');
-        if (!apiKey) {
-          reject(new Error('Missing api-key'));
-          return;
-        }
+          const apiKey = queryAsObject.get('api-key');
+          if (!apiKey) {
+            reject(new Error('Missing api-key'));
+            return;
+          }
 
-        console.log('redirect');
+          res.writeHead(302, {
+            Location: 'https://builder.io/cli-auth?success=true',
+          });
+          res.end();
+          req.socket.end();
+          req.socket.destroy();
+          server.close();
+          loading.stop(true);
+          resolve({
+            privateKey,
+            apiKey,
+          });
+        })
+        .listen(PORT);
 
-        res.writeHead(302, {
-          Location: 'https://builder.io/cli-auth?success=true',
-        });
-        res.end();
-        req.socket.end();
-        req.socket.destroy();
-        server.close();
-        loading.stop(true);
-        resolve({
-          privateKey,
-          apiKey,
-        });
-      })
-      .listen(PORT);
+      // opens browser to the authorizationURL (auth consent form in Smartsheet)
+      console.log(`\n🔑 ${yellowBright(bold('Login required'))}
+  ${dim('   Your browser will open, please follow the instructions.')}\n`);
 
-    // opens browser to the authorizationURL (auth consent form in Smartsheet)
-    console.log(`\n🔑 ${yellowBright(bold('Login required'))}
-${dim('   Your browser will open, please follow the instructions.')}\n`);
+      loading.setSpinnerString(8);
+      loading.start();
 
-    loading.setSpinnerString(8);
-    loading.start();
-
-    openBuilderAuth(PORT, CLIENT_ID);
+      openBuilderAuth(PORT, CLIENT_ID);
+    });
   });
 };

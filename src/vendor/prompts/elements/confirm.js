@@ -64,7 +64,7 @@ export class ConfirmPrompt extends Prompt {
           cursor.to(0) +
           [
             style.symbol(this.done, this.aborted),
-            bold(this.msg),
+            this.msg,
             style.delimiter(false),
             this.done ? green(this.value ? 'yes' : 'no') : gray(this.initialValue ? '(Y/n)' : '(y/N)'),
           ].join(' '),

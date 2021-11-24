@@ -4,7 +4,7 @@ import os from 'os';
 export const HOST = 'http://localhost:1234';
 export const openBuilder = async (projectName: string, port: number = 3000) => {
   const overridePreviewUrl = encodeURIComponent(`http://localhost:${port}`);
-  await open(`${HOST}/onboarding/simple?overridePreviewUrl=${overridePreviewUrl}&project_name=${projectName}`, {
+  await open(`${HOST}/onboarding/starter?overridePreviewUrl=${overridePreviewUrl}&project_name=${projectName}`, {
     app: {
       name: 'google chrome',
     },
