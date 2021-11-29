@@ -10,29 +10,18 @@ export interface Starter {
 
 export const STARTERS: Starter[] = [
   {
-    name: 'nextjs',
+    name: 'react',
     repo: 'manucorporat/test-builder-starter',
-    description: 'Get starter with a server-side rendering nextjs starter',
-    docs: 'https://github.com/BuilderIO/nextjs-shopify#readme',
-  },
-
-  // {
-  //   name: 'nexjs-shopify',
-  //   repo: 'BuilderIO/nextjs-shopify',
-  //   description: 'The ultimate starter for headless Shopify stores',
-  //   docs: 'https://github.com/BuilderIO/nextjs-shopify#readme',
-  // },
-  // {
-  //   name: 'gatsby-basic',
-  //   repo: 'BuilderIO/gatsby-starter-builder',
-  //   description: 'Gatsby starter with drag and drop page building',
-  //   docs: 'https://github.com/BuilderIO/gatsby-starter-builder',
-  // },
-  {
-    name: 'react-basic',
-    repo: 'BuilderIO/builder-react-example-starter',
-    description: 'A basic example of using Builder with React',
+    description: 'Simple create-react-app using builder',
     docs: 'https://github.com/BuilderIO/builder-react-example-starter',
+    prefix: 'create-react-app'
+  },
+  {
+    name: 'nextjs (SSR)',
+    repo: 'manucorporat/test-builder-starter',
+    description: 'Basic React app with nextjs server-side rendering',
+    docs: 'https://github.com/BuilderIO/nextjs-shopify#readme',
+    prefix: 'nextjs'
   },
 ];
 
