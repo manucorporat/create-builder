@@ -98,15 +98,15 @@ const PORT = 10110;
 const getNewToken = () => {
   console.log(`\n🔑 ${yellowBright(bold('Login required'))}`);
 
-  return askQuestion(`Your browser will open to complete authentication. ${bold("Confirm?")}`).then(next => {
+  return askQuestion(` Your browser will open to complete authentication. ${bold('Confirm?')}`).then(next => {
     if (!next) {
-      throw new Error("aborted");
+      throw new Error('aborted');
     }
     const loading = new Spinner(bold(' Waiting for authorization...'));
     return new Promise<LoginData>((resolve, reject) => {
       const server = http
         .createServer((req, res) => {
-          const parsedUrl = new URL(req.url!, "http://localhost:10110/");
+          const parsedUrl = new URL(req.url!, 'http://localhost:10110/');
           console.log('parsedUrl.pathname', parsedUrl.pathname);
           console.log('req.method', req.method);
           if (parsedUrl.pathname !== '/auth') {

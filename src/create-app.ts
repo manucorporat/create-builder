@@ -5,7 +5,7 @@ import { bold, cyan, dim, green } from 'colorette';
 import { downloadStarter } from './download';
 import { Starter } from './starters';
 import { unZipBuffer } from './unzip';
-import { askQuestion, logSuccess, npm, onlyUnix, printDuration, setTmpDirectory, terminalPrompt } from './utils';
+import { askQuestion, logSuccess, npm, npmInstall, onlyUnix, printDuration, setTmpDirectory, terminalPrompt } from './utils';
 import { BUILD, START, TEST } from './texts';
 import { replaceInFile } from 'replace-in-file';
 import { mustGetApiKey } from './login';
@@ -53,7 +53,7 @@ ${renderDocs(starter)}
 `);
 
   if (autoRun) {
-    const next = await askQuestion(`Run dev server and open the builder's editor in the browser. ${bold("Confirm?")}`);
+    const next = await askQuestion(`Run dev server and open the builder's editor in the browser. ${bold('Confirm?')}`);
     if (next) {
       console.log(`
 ${dim('Opening dev server and editor in the browser:')}
@@ -63,7 +63,7 @@ ${dim('Opening dev server and editor in the browser:')}
 `);
       setTimeout(() => {
         openBuilder(projectName, 3000);
-      }, 2000)
+      }, 2000);
       await npm('start', projectName, 'inherit');
     } else {
       console.log('\n  aborting...');
@@ -114,11 +114,7 @@ async function prepare(starter: Starter) {
   loading2.stop(true);
   logSuccess('Starter unpacked');
 
-  const loading3 = new Spinner(bold('Installing deps'));
-  loading3.setSpinnerString(18);
-  loading3.start();
-  await npm('install', tmpPath, 'ignore');
-  loading3.stop(true);
+  await npmInstall(tmpPath);
   logSuccess('Deps installed');
 
   return async (projectName: string, context: { [context: string]: string }) => {

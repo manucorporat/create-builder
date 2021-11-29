@@ -55,6 +55,21 @@ export function npm(command: string, projectPath: string, stdio: any = 'ignore')
   });
 }
 
+export function npmInstall(projectPath: string) {
+  return new Promise<void>((resolve, reject) => {
+    const commands = IS_YARN ? ['--silent', '--ignore-engines', '--no-node-version-check'] : ['install', '--loglevel=error', '--no-audit', '--no-fund'];
+    const p = spawn(IS_YARN ? 'yarn' : 'npm', commands, {
+      shell: true,
+      stdio: 'inherit',
+      cwd: projectPath,
+    });
+    p.once('exit', () => resolve());
+    p.once('error', reject);
+
+    childrenProcesses.push(p);
+  });
+}
+
 export function rimraf(dir_path: string) {
   if (existsSync(dir_path)) {
     readdirSync(dir_path).forEach(entry => {
@@ -154,7 +169,6 @@ export const logError = (str: string) => {
   console.log(`${red('❌')} ${str}`);
 };
 
-
 export const askQuestion = async (message: string) => {
   const { confirm }: any = await prompt([
     {
@@ -165,4 +179,4 @@ export const askQuestion = async (message: string) => {
     },
   ]);
   return confirm;
-}
+};

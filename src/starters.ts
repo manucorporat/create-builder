@@ -14,14 +14,14 @@ export const STARTERS: Starter[] = [
     repo: 'manucorporat/test-builder-starter',
     description: 'Simple create-react-app using builder',
     docs: 'https://github.com/BuilderIO/builder-react-example-starter',
-    prefix: 'create-react-app'
+    prefix: 'create-react-app',
   },
   {
     name: 'nextjs (SSR)',
     repo: 'manucorporat/test-builder-starter',
     description: 'Basic React app with nextjs server-side rendering',
     docs: 'https://github.com/BuilderIO/nextjs-shopify#readme',
-    prefix: 'nextjs'
+    prefix: 'nextjs',
   },
 ];
 
