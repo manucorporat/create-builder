@@ -2,10 +2,9 @@ import { join } from 'path';
 import { userInfo } from 'os';
 import { readJSON, existsSync, outputJSON } from 'fs-extra';
 import http from 'http';
-import open from 'open';
-import { bold, dim, yellowBright } from 'colorette';
+import { bold, yellowBright } from 'colorette';
 import { Spinner } from 'cli-spinner';
-import { openBuilderAuth } from './open';
+import { HOST, openBuilderAuth } from './open';
 import { askQuestion } from './utils';
 
 interface Credentials {
@@ -97,7 +96,9 @@ const CLIENT_ID = 'create-builder';
 const PORT = 10110;
 
 const getNewToken = () => {
-  return askQuestion(`${yellowBright(bold('Login required'))}. The CLI is going to open the browser. ${bold("Confirm?")}`).then(next => {
+  console.log(`\n🔑 ${yellowBright(bold('Login required'))}`);
+
+  return askQuestion(`Your browser will open to complete authentication. ${bold("Confirm?")}`).then(next => {
     if (!next) {
       throw new Error("aborted");
     }
@@ -127,7 +128,7 @@ const getNewToken = () => {
           }
 
           res.writeHead(302, {
-            Location: 'https://builder.io/cli-auth?success=true',
+            Location: `${HOST}/cli-auth?success=true`,
           });
           res.end();
           req.socket.end();
@@ -140,10 +141,6 @@ const getNewToken = () => {
           });
         })
         .listen(PORT);
-
-      // opens browser to the authorizationURL (auth consent form in Smartsheet)
-      console.log(`\n🔑 ${yellowBright(bold('Login required'))}
-  ${dim('   Your browser will open, please follow the instructions.')}\n`);
 
       loading.setSpinnerString(8);
       loading.start();
